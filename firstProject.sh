@@ -28,29 +28,51 @@ function report_uptime(){
     echo "uptime: $uptimeSec Seconds"
 }
 
-if [[ $(id -u) -eq 0 ]]; then
-echo '
+function display_menu(){
+    echo '
 basic system tracking
+0 exit
 1 memory usage
 2 disk usage
 3 uptime
 4 process amount
 '
+}
 
-read -p "Please choose one: " choiceOne
+while [ $# -gt 0 ]; do
+    case $1 in
+        -h|--help)
+            echo "A simple system monitoring tool written in Bash. sudo is required in order to use. You can monitor memory and disk usage, uptime and process amount."
+            exit 0
+            ;;
+    esac
 
-if [[ $choiceOne -eq 1 ]]; then
-    memory_usage
+    shift
+done
 
-elif [[ $choiceOne -eq 2 ]]; then
-    disk_usage
+if [[ $(id -u) -eq 0 ]]; then    
+    display_menu
+    read -p "Please choose one: " choiceOne
 
-elif [[ $choiceOne -eq 3 ]]; then
-    report_uptime
+    if [[ $choiceOne -eq 0 ]]; then
+        echo "Exiting the program."
+        exit 0
 
-elif [[ $choiceOne -eq 4 ]]; then
-    process_amount
-fi
+    elif [[ $choiceOne -eq 1 ]]; then
+        memory_usage
+
+    elif [[ $choiceOne -eq 2 ]]; then
+        disk_usage
+
+    elif [[ $choiceOne -eq 3 ]]; then
+        report_uptime
+
+    elif [[ $choiceOne -eq 4 ]]; then
+        process_amount
+    else
+        echo "invalid number. Exiting the program."
+        exit 0
+    fi
 
 else
     echo "You must be superuser to execute this program!"
